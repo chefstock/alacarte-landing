@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À la Carte — Цифровое меню нового поколения</title>
+<meta name="description" content="Электронное меню с AI-официантом для ресторанов">
+<meta name="theme-color" content="#E8EBF2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+--bg:#E8EBF2;--sd:rgba(163,177,198,.55);--sl:#fff;
+--acc:#1A2332;--acc2:#2C3545;
+--ink:#1A2332;--ink2:#3A4A5C;--muted:#7A8A9A;--muted2:#A8B4C0;
+--green:#2D9E72;--blue:#3A7EC8;
+--neo:6px 6px 14px var(--sd),-6px -6px 14px var(--sl);
+--neo-sm:3px 3px 8px var(--sd),-3px -3px 8px var(--sl);
+--neo-in:inset 3px 3px 8px var(--sd),inset -3px -3px 8px var(--sl);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--acc);color:#fff}
+.anim{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+.anim.visible{opacity:1;transform:translateY(0)}
+.anim-d1{transition-delay:.1s}.anim-d2{transition-delay:.2s}.anim-d3{transition-delay:.3s}
+.anim-d4{transition-delay:.4s}.anim-d5{transition-delay:.5s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(232,235,242,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,5vw,80px);height:64px;box-shadow:0 2px 12px rgba(163,177,198,.3)}
+.nav-brand{font-weight:800;font-size:16px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.nav-center{display:flex;gap:28px}
+.nav-center a{font-size:11px;font-weight:600;color:var(--muted);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:color .3s}
+.nav-center a:hover{color:var(--acc)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.lang-sw{display:flex;gap:2px;border-radius:10px;padding:3px;box-shadow:var(--neo-in)}
+.lang-btn{padding:5px 10px;border-radius:8px;border:none;font-size:10px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;background:transparent;color:var(--muted);transition:all .2s}
+.lang-btn.on{background:var(--acc);color:#fff;box-shadow:2px 2px 6px rgba(26,35,50,.3)}
+.btn-nav{padding:8px 22px;border-radius:12px;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;background:var(--acc);color:#fff;box-shadow:3px 3px 8px rgba(26,35,50,.3),-2px -2px 6px rgba(60,70,90,.3);transition:all .2s;letter-spacing:.04em}
+.btn-nav:hover{box-shadow:var(--neo-in);transform:scale(.98)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px clamp(20px,5vw,80px) 60px}
+.hero-inner{max-width:1200px;width:100%;display:flex;align-items:center;gap:80px}
+.hero-text{flex:1;min-width:0}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:99px;margin-bottom:24px;box-shadow:var(--neo-sm);font-size:11px;font-weight:600;color:var(--acc)}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(45,158,114,.4)}
+.hero h1{font-size:clamp(36px,5vw,58px);font-weight:600;line-height:1.1;letter-spacing:-.03em;color:var(--ink);margin-bottom:20px}
+.hero h1 span.acc{color:var(--acc)}
+.hero-sub{font-size:14px;line-height:1.7;color:var(--muted);max-width:440px;margin-bottom:32px;font-weight:500}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{padding:14px 32px;border-radius:14px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;background:var(--acc);color:#fff;box-shadow:4px 4px 12px rgba(26,35,50,.35),-3px -3px 8px rgba(60,70,90,.3);transition:all .2s;letter-spacing:.02em}
+.btn-primary:hover{box-shadow:var(--neo-in);transform:scale(.98)}
+.btn-ghost{padding:14px 32px;border-radius:14px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--ink2);box-shadow:var(--neo);transition:all .2s;letter-spacing:.02em}
+.btn-ghost:hover{box-shadow:var(--neo-in)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* PHONE */
+.phone{width:270px;height:560px;background:var(--bg);border-radius:36px;box-shadow:var(--neo),inset 0 0 0 2px rgba(255,255,255,.6);overflow:hidden;position:relative;animation:float 6s ease-in-out infinite}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:26px;background:var(--ink);border-radius:0 0 16px 16px;z-index:2}
+.phone-screen{padding:38px 16px 16px;height:100%;overflow-y:auto;scrollbar-width:none}
+.phone-screen::-webkit-scrollbar{display:none}
+.pm-header{text-align:center;margin-bottom:14px}
+.pm-logo{width:44px;height:44px;border-radius:12px;background:var(--acc);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;color:#fff;font-weight:800;letter-spacing:.04em;box-shadow:3px 3px 8px rgba(26,35,50,.3)}
+.pm-name{font-size:14px;font-weight:700;color:var(--ink)}
+.pm-addr{font-size:9px;color:var(--muted);margin-top:2px;font-weight:500}
+.pm-cats{display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.pm-cats::-webkit-scrollbar{display:none}
+.pm-cat{padding:5px 11px;border-radius:8px;font-size:9px;font-weight:700;white-space:nowrap;cursor:pointer;border:none;font-family:'Montserrat',sans-serif}
+.pm-cat.on{background:var(--acc);color:#fff;box-shadow:2px 2px 5px rgba(26,35,50,.3)}
+.pm-cat.off{background:var(--bg);color:var(--muted);box-shadow:var(--neo-sm)}
+.pm-item{display:flex;gap:10px;padding:10px;margin-bottom:7px;border-radius:12px;background:var(--bg);box-shadow:var(--neo-sm)}
+.pm-img{width:50px;height:50px;border-radius:10px;flex-shrink:0;box-shadow:var(--neo-in);display:flex;align-items:center;justify-content:center}
+.pm-img svg{stroke:var(--muted2);width:20px;height:20px}
+.pm-info{flex:1;min-width:0}
+.pm-dish{font-size:10px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.pm-desc{font-size:8px;color:var(--muted);line-height:1.4;margin-bottom:3px;font-weight:500}
+.pm-row{display:flex;align-items:center;justify-content:space-between}
+.pm-price{font-size:10px;font-weight:800;color:var(--acc)}
+.pm-add{width:22px;height:22px;border-radius:7px;border:none;background:var(--acc);color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:2px 2px 5px rgba(26,35,50,.3)}
+
+/* STATS */
+.stats{padding:50px clamp(20px,5vw,80px)}
+.stats-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.stat-card{padding:24px 16px;border-radius:16px;box-shadow:var(--neo)}
+.stat-num{font-size:36px;font-weight:800;color:var(--acc);letter-spacing:-.02em}
+.stat-label{font-size:9px;color:var(--muted);font-weight:700;margin-top:4px;letter-spacing:.1em;text-transform:uppercase}
+
+/* SECTION */
+.section{padding:80px clamp(20px,5vw,80px)}
+.section-header{text-align:center;max-width:550px;margin:0 auto 50px}
+.section-tag{display:inline-block;padding:6px 16px;border-radius:10px;box-shadow:var(--neo-sm);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:18px}
+.section-title{font-size:clamp(26px,3.5vw,38px);font-weight:800;line-height:1.2;letter-spacing:-.02em;margin-bottom:14px;color:var(--ink)}
+.section-title .acc{color:var(--acc)}
+.section-desc{font-size:13px;line-height:1.7;color:var(--muted);font-weight:500}
+
+/* FEATURES */
+.features-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feat-card{padding:30px 24px;border-radius:18px;box-shadow:var(--neo);transition:all .3s}
+.feat-card:hover{box-shadow:var(--neo-in);transform:translateY(-2px)}
+.feat-icon{width:46px;height:46px;border-radius:13px;box-shadow:var(--neo-sm);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.feat-icon svg{stroke:var(--acc);width:20px;height:20px;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.feat-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.feat-desc{font-size:11px;line-height:1.7;color:var(--muted);font-weight:500}
+
+/* DEMO */
+.demo-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:60px}
+.demo-text{flex:1}
+.demo-list{list-style:none;margin-top:24px}
+.demo-list li{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(163,177,198,.2);font-size:12px;color:var(--ink2);font-weight:500}
+.demo-check{width:22px;height:22px;border-radius:8px;flex-shrink:0;box-shadow:var(--neo-sm);display:flex;align-items:center;justify-content:center}
+.demo-check svg{stroke:var(--green);width:12px;height:12px}
+
+/* PRICING */
+.pricing-grid{max-width:940px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+.price-card{padding:32px 24px;border-radius:20px;box-shadow:var(--neo);transition:all .3s;position:relative}
+.price-card.pop{box-shadow:var(--neo),0 0 0 2px var(--acc);background:var(--bg)}
+.price-card.pop .price-badge{display:block}
+.price-badge{display:none;position:absolute;top:-12px;right:20px;padding:5px 14px;border-radius:8px;background:var(--acc);font-size:9px;font-weight:700;color:#fff;letter-spacing:.08em;text-transform:uppercase;box-shadow:3px 3px 8px rgba(26,35,50,.3)}
+.price-tier{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.price-amount{display:flex;align-items:baseline;gap:4px;margin-bottom:6px}
+.price-currency{font-size:18px;font-weight:500;color:var(--muted)}
+.price-val{font-size:48px;font-weight:800;color:var(--ink);letter-spacing:-.03em}
+.price-period{font-size:11px;color:var(--muted);font-weight:500}
+.price-subtitle{font-size:11px;color:var(--muted);margin-bottom:20px;font-weight:500}
+.price-features{list-style:none;margin-bottom:24px}
+.price-features li{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:11px;color:var(--ink2);font-weight:500;border-bottom:1px solid rgba(163,177,198,.15)}
+.price-features li:last-child{border:none}
+.pf-check{color:var(--green);font-weight:700;font-size:14px}
+.pf-x{color:var(--muted2);font-size:12px}
+.btn-price{width:100%;padding:13px;border-radius:12px;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s;letter-spacing:.04em}
+.btn-price.filled{background:var(--acc);color:#fff;box-shadow:3px 3px 8px rgba(26,35,50,.3),-2px -2px 6px rgba(60,70,90,.3)}
+.btn-price.filled:hover{box-shadow:var(--neo-in)}
+.btn-price.outline{background:var(--bg);color:var(--ink2);box-shadow:var(--neo-sm)}
+.btn-price.outline:hover{box-shadow:var(--neo-in)}
+
+/* TESTIMONIALS */
+.testi-grid{max-width:940px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.testi-card{padding:24px;border-radius:18px;box-shadow:var(--neo)}
+.testi-stars{color:var(--acc);font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.testi-text{font-size:12px;line-height:1.7;color:var(--ink2);margin-bottom:14px;font-weight:500}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:34px;height:34px;border-radius:10px;box-shadow:var(--neo-sm);display:flex;align-items:center;justify-content:center}
+.testi-avatar svg{stroke:var(--acc);width:16px;height:16px;fill:none;stroke-width:1.5}
+.testi-name{font-size:11px;font-weight:700;color:var(--ink)}
+.testi-role{font-size:9px;color:var(--muted);font-weight:500}
+
+/* CTA */
+.cta{text-align:center}
+.cta-card{max-width:700px;margin:0 auto;padding:50px 40px;border-radius:24px;box-shadow:var(--neo)}
+.cta-title{font-size:clamp(24px,3vw,34px);font-weight:800;margin-bottom:14px;color:var(--ink)}
+.cta-title .acc{color:var(--acc)}
+.cta-desc{font-size:13px;color:var(--muted);margin-bottom:28px;font-weight:500}
+
+/* FOOTER */
+footer{padding:50px clamp(20px,5vw,80px) 24px}
+.footer-top{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;gap:40px;margin-bottom:30px}
+.footer-brand{font-weight:800;font-size:14px;color:var(--acc);margin-bottom:8px;letter-spacing:.08em;text-transform:uppercase}
+.footer-desc{font-size:11px;color:var(--muted);max-width:260px;line-height:1.6;font-weight:500}
+.footer-cols{display:flex;gap:50px}
+.footer-col-title{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.footer-col a{display:block;font-size:11px;color:var(--ink2);text-decoration:none;padding:3px 0;transition:color .2s;font-weight:500}
+.footer-col a:hover{color:var(--acc)}
+.footer-bottom{max-width:1000px;margin:0 auto;padding-top:20px;border-top:1px solid rgba(163,177,198,.25);font-size:10px;color:var(--muted);text-align:center;font-weight:500}
+
+@media(max-width:900px){
+.hero-inner{flex-direction:column;text-align:center;gap:40px}
+.hero-sub{margin-left:auto;margin-right:auto}
+.hero-actions{justify-content:center}
+.features-grid,.pricing-grid,.testi-grid{grid-template-columns:1fr}
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.demo-inner{flex-direction:column;text-align:center}
+.footer-top{flex-direction:column}
+.nav-center{display:none}
+}
+.hero .anim,.hero .anim.anim-d1,.hero .anim.anim-d2,.hero .anim.anim-d3{opacity:1;transform:translateY(0);transition:none}
+</style>
+</head>
+<body>
+
+<nav>
+<a href="#" class="nav-brand">A la Carte</a>
+<div class="nav-center">
+<a href="#features" data-ru="Функции" data-en="Features" data-uz="Imkoniyatlar">Функции</a>
+<a href="#demo" data-ru="Демо" data-en="Demo" data-uz="Demo">Демо</a>
+<a href="#pricing" data-ru="Тарифы" data-en="Pricing" data-uz="Tariflar">Тарифы</a>
+<a href="#reviews" data-ru="Отзывы" data-en="Reviews" data-uz="Sharhlar">Отзывы</a>
+</div>
+<div class="nav-right">
+<div class="lang-sw"><button class="lang-btn on" onclick="setLang('ru')">RU</button><button class="lang-btn" onclick="setLang('en')">EN</button><button class="lang-btn" onclick="setLang('uz')">UZ</button></div>
+<button class="btn-nav" data-ru="Начать" data-en="Start" data-uz="Boshlash" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Начать</button>
+</div>
+</nav>
+
+<section class="hero">
+<div class="hero-inner">
+<div class="hero-text">
+<div class="hero-badge anim"><span class="hero-badge-dot"></span><span data-ru="Уже 50+ ресторанов" data-en="Already 50+ restaurants" data-uz="50+ restoran">Уже 50+ ресторанов</span></div>
+<h1 class="anim anim-d1"><span data-ru="Меню, которое" data-en="A menu that" data-uz="Mehmonlarni">Меню, которое</span><br><span class="acc" data-ru="продает за вас" data-en="sells for you" data-uz="siz uchun sotadi">продает за вас</span></h1>
+<p class="hero-sub anim anim-d2" data-ru="Электронное меню с AI-официантом, QR-доступом и аналитикой продаж для ресторанов Узбекистана" data-en="Digital menu with AI waiter, QR access and sales analytics for restaurants in Uzbekistan" data-uz="AI-ofitsiant, QR-kirish va savdo tahlili bilan elektron menyu">Электронное меню с AI-официантом, QR-доступом и аналитикой продаж для ресторанов Узбекистана</p>
+<div class="hero-actions anim anim-d3">
+<button class="btn-primary" data-ru="Попробовать бесплатно" data-en="Try for Free" data-uz="Bepul sinab ko'ring" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Попробовать бесплатно</button>
+<button class="btn-ghost" data-ru="Смотреть демо" data-en="Watch Demo" data-uz="Demo ko'rish" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Смотреть демо</button>
+</div>
+</div>
+<div class="hero-phone anim anim-d2">
+<div class="phone"><div class="phone-notch"></div><div class="phone-screen">
+<div class="pm-header"><div class="pm-logo">SG</div><div class="pm-name">Silk Garden</div><div class="pm-addr">Навои 24, Ташкент</div></div>
+<div class="pm-cats"><button class="pm-cat on">Все</button><button class="pm-cat off">Салаты</button><button class="pm-cat off">Горячее</button><button class="pm-cat off">Десерты</button></div>
+<div class="pm-item"><div class="pm-img"><svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg></div><div class="pm-info"><div class="pm-dish">Цезарь с креветками</div><div class="pm-desc">Романо, пармезан, креветки</div><div class="pm-row"><span class="pm-price">68 000 сум</span><button class="pm-add">+</button></div></div></div>
+<div class="pm-item"><div class="pm-img"><svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="3"/><line x1="4" y1="12" x2="20" y2="12"/></svg></div><div class="pm-info"><div class="pm-dish">Стейк Рибай</div><div class="pm-desc">Мраморная говядина, 300г</div><div class="pm-row"><span class="pm-price">185 000 сум</span><button class="pm-add">+</button></div></div></div>
+<div class="pm-item"><div class="pm-img"><svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3c-3 4-3 8 0 12"/></svg></div><div class="pm-info"><div class="pm-dish">Паста Карбонара</div><div class="pm-desc">Гуанчиале, пекорино</div><div class="pm-row"><span class="pm-price">52 000 сум</span><button class="pm-add">+</button></div></div></div>
+<div class="pm-item"><div class="pm-img"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M5 12h14"/><path d="M12 5v14"/></svg></div><div class="pm-info"><div class="pm-dish">Тирамису</div><div class="pm-desc">Маскарпоне, эспрессо</div><div class="pm-row"><span class="pm-price">42 000 сум</span><button class="pm-add">+</button></div></div></div>
+</div></div>
+</div>
+</div>
+</section>
+
+<section class="stats">
+<div class="stats-grid">
+<div class="stat-card anim"><div class="stat-num">50+</div><div class="stat-label" data-ru="Ресторанов" data-en="Restaurants" data-uz="Restoranlar">Ресторанов</div></div>
+<div class="stat-card anim anim-d1"><div class="stat-num">10K+</div><div class="stat-label" data-ru="Гостей в месяц" data-en="Guests / month" data-uz="Oyiga mehmonlar">Гостей в месяц</div></div>
+<div class="stat-card anim anim-d2"><div class="stat-num">23%</div><div class="stat-label" data-ru="Рост чека" data-en="Check growth" data-uz="Chek o'sishi">Рост чека</div></div>
+<div class="stat-card anim anim-d3"><div class="stat-num">5 мин</div><div class="stat-label" data-ru="Настройка" data-en="Setup" data-uz="Sozlash">Настройка</div></div>
+</div>
+</section>
+
+<section class="section" id="features">
+<div class="section-header anim"><div class="section-tag" data-ru="Возможности" data-en="Features" data-uz="Imkoniyatlar">Возможности</div><h2 class="section-title" data-ru="Все для <span class='acc'>современного</span> ресторана" data-en="Everything for a <span class='acc'>modern</span> restaurant" data-uz="<span class='acc'>Zamonaviy</span> restoran uchun hamma narsa" data-html="true">Все для <span class="acc">современного</span> ресторана</h2></div>
+<div class="features-grid">
+<div class="feat-card anim"><div class="feat-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg></div><div class="feat-title" data-ru="QR-код за 5 минут" data-en="QR Code in 5 min" data-uz="5 daqiqada QR-kod">QR-код за 5 минут</div><div class="feat-desc" data-ru="Создайте меню и поставьте QR на столики. Гости открывают без скачивания" data-en="Create a menu and place QR on tables. Guests open without downloading" data-uz="Menyu yarating va QR-kodni qo'ying. Yuklamasdan ochadilar">Создайте меню и поставьте QR на столики. Гости открывают без скачивания</div></div>
+<div class="feat-card anim anim-d1"><div class="feat-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M2 12h4l3-3 4 6 3-3h6"/></svg></div><div class="feat-title" data-ru="AI Официант" data-en="AI Waiter" data-uz="AI Ofitsiant">AI Официант</div><div class="feat-desc" data-ru="Рекомендует блюда, отвечает на вопросы о составе и аллергенах" data-en="Recommends dishes, answers questions about ingredients" data-uz="Taomlarni tavsiya qiladi, tarkib haqida javob beradi">Рекомендует блюда, отвечает на вопросы о составе и аллергенах</div></div>
+<div class="feat-card anim anim-d2"><div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="feat-title" data-ru="5 языков" data-en="5 Languages" data-uz="5 til">5 языков</div><div class="feat-desc" data-ru="Автоматический перевод на язык гостя. Русский, узбекский, английский, арабский, китайский" data-en="Auto-translation. Russian, Uzbek, English, Arabic, Chinese" data-uz="Avtomatik tarjima. Rus, o'zbek, ingliz, arab, xitoy">Автоматический перевод на язык гостя. Русский, узбекский, английский, арабский, китайский</div></div>
+<div class="feat-card anim anim-d3"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div><div class="feat-title" data-ru="Аналитика продаж" data-en="Sales Analytics" data-uz="Savdo tahlili">Аналитика продаж</div><div class="feat-desc" data-ru="Просмотры, корзина, пиковые часы — данные для умных решений" data-en="Views, cart, peak hours — data for smart decisions" data-uz="Ko'rishlar, savatcha, eng gavjum soatlar">Просмотры, корзина, пиковые часы — данные для умных решений</div></div>
+<div class="feat-card anim anim-d4"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg></div><div class="feat-title" data-ru="Оффлайн режим" data-en="Offline Mode" data-uz="Oflayn rejim">Оффлайн режим</div><div class="feat-desc" data-ru="Работает без интернета. Данные кэшируются и синхронизируются" data-en="Works offline. Data is cached and synced" data-uz="Internetsiz ishlaydi. Keshlanadi va sinxronlanadi">Работает без интернета. Данные кэшируются и синхронизируются</div></div>
+<div class="feat-card anim anim-d5"><div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2h4v4"/><path d="M15.59 4.41L21 2"/><circle cx="6.5" cy="13.5" r="2.5"/><path d="M2 17v4h4"/><path d="M4.41 15.59L2 21"/></svg></div><div class="feat-title" data-ru="Ваш бренд" data-en="Your Brand" data-uz="Brendingiz">Ваш бренд</div><div class="feat-desc" data-ru="Логотип, цвета, шрифты — меню как часть ресторана" data-en="Logo, colors, fonts — menu as part of restaurant" data-uz="Logotip, ranglar — menyu restoran qismi">Логотип, цвета, шрифты — меню как часть ресторана</div></div>
+</div>
+</section>
+
+<section class="section" id="demo">
+<div class="demo-inner">
+<div class="demo-text anim">
+<div class="section-tag" data-ru="Живое демо" data-en="Live Demo" data-uz="Jonli demo">Живое демо</div>
+<h2 class="section-title" data-ru="Попробуйте <span class='acc'>прямо сейчас</span>" data-en="Try it <span class='acc'>right now</span>" data-uz="Hoziroq <span class='acc'>sinab ko'ring</span>" data-html="true">Попробуйте <span class="acc">прямо сейчас</span></h2>
+<p class="section-desc" data-ru="Откройте реальное демо-меню Silk Garden" data-en="Open a real demo menu of Silk Garden" data-uz="Silk Garden demo menyusini oching">Откройте реальное демо-меню Silk Garden</p>
+<ul class="demo-list">
+<li><div class="demo-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span data-ru="Навигация по категориям" data-en="Category navigation" data-uz="Toifalar navigatsiyasi">Навигация по категориям</span></li>
+<li><div class="demo-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span data-ru="Корзина с подсчетом суммы" data-en="Cart with total" data-uz="Summa hisobli savatcha">Корзина с подсчетом суммы</span></li>
+<li><div class="demo-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span data-ru="Фильтры: хиты, халяль, вегетарианское" data-en="Filters: hits, halal, vegetarian" data-uz="Filtrlar: hitlar, halol, vegetarian">Фильтры: хиты, халяль, вегетарианское</span></li>
+<li><div class="demo-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span data-ru="Работает на любом устройстве" data-en="Works on any device" data-uz="Har qanday qurilmada">Работает на любом устройстве</span></li>
+</ul>
+<div style="margin-top:24px"><a href="/menu/silk-garden" target="_blank" class="btn-primary" style="text-decoration:none;display:inline-block" data-ru="Открыть демо-меню" data-en="Open Demo" data-uz="Demo ochish">Открыть демо-меню</a></div>
+</div>
+<div class="anim anim-d2">
+<div class="phone" style="animation-delay:.5s"><div class="phone-notch"></div><div class="phone-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 30px">
+<div style="width:140px;height:140px;border-radius:18px;box-shadow:var(--neo);display:flex;align-items:center;justify-content:center;margin-bottom:18px">
+<svg width="70" height="70" viewBox="0 0 70 70" fill="none" stroke="var(--muted2)" stroke-width="1.2"><rect x="6" y="6" width="20" height="20" rx="2"/><rect x="44" y="6" width="20" height="20" rx="2"/><rect x="6" y="44" width="20" height="20" rx="2"/><rect x="44" y="44" width="8" height="8" rx="1"/><rect x="56" y="44" width="8" height="8" rx="1"/><rect x="44" y="56" width="8" height="8" rx="1"/><rect x="56" y="56" width="8" height="8" rx="1"/><rect x="30" y="6" width="8" height="8" rx="1"/><rect x="6" y="30" width="8" height="8" rx="1"/><rect x="30" y="30" width="8" height="8" rx="2"/></svg>
+</div>
+<div style="font-size:12px;font-weight:700;color:var(--ink)">QR-код</div>
+<div style="font-size:9px;color:var(--muted);font-weight:500;margin-top:4px">Silk Garden Menu</div>
+</div></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="pricing">
+<div class="section-header anim"><div class="section-tag" data-ru="Тарифы" data-en="Pricing" data-uz="Tariflar">Тарифы</div><h2 class="section-title" data-ru="Прозрачные <span class='acc'>цены</span>" data-en="Transparent <span class='acc'>pricing</span>" data-uz="Shaffof <span class='acc'>narxlar</span>" data-html="true">Прозрачные <span class="acc">цены</span></h2><p class="section-desc" data-ru="Начните бесплатно — масштабируйтесь когда готовы" data-en="Start free — scale when ready" data-uz="Bepul boshlang — tayyor bo'lganda kengaytiring">Начните бесплатно — масштабируйтесь когда готовы</p></div>
+<div class="pricing-grid">
+<div class="price-card anim"><div class="price-tier" data-ru="Старт" data-en="Starter" data-uz="Boshlang'ich">Старт</div><div class="price-amount"><span class="price-val">0</span><span class="price-period" data-ru="сум/мес" data-en="/month" data-uz="so'm/oy">сум/мес</span></div><div class="price-subtitle" data-ru="Для знакомства" data-en="To get started" data-uz="Tanishish uchun">Для знакомства</div><ul class="price-features"><li><span class="pf-check">&#10003;</span><span data-ru="До 50 блюд" data-en="Up to 50 dishes" data-uz="50 tagacha taom">До 50 блюд</span></li><li><span class="pf-check">&#10003;</span><span data-ru="1 ресторан" data-en="1 restaurant" data-uz="1 restoran">1 ресторан</span></li><li><span class="pf-check">&#10003;</span><span>QR-код</span></li><li><span class="pf-check">&#10003;</span><span data-ru="3 языка" data-en="3 languages" data-uz="3 til">3 языка</span></li><li><span class="pf-x">&mdash;</span><span style="color:var(--muted2)" data-ru="AI официант" data-en="AI waiter" data-uz="AI ofitsiant">AI официант</span></li><li><span class="pf-x">&mdash;</span><span style="color:var(--muted2)" data-ru="Аналитика" data-en="Analytics" data-uz="Tahlil">Аналитика</span></li></ul><button class="btn-price outline" data-ru="Начать бесплатно" data-en="Start Free" data-uz="Bepul boshlash">Начать бесплатно</button></div>
+<div class="price-card pop anim anim-d1"><div class="price-badge" data-ru="Популярный" data-en="Popular" data-uz="Mashhur">Популярный</div><div class="price-tier">PRO</div><div class="price-amount"><span class="price-currency">$</span><span class="price-val">29</span><span class="price-period" data-ru="/месяц" data-en="/month" data-uz="/oy">/месяц</span></div><div class="price-subtitle" data-ru="Для активных ресторанов" data-en="For active restaurants" data-uz="Faol restoranlar uchun">Для активных ресторанов</div><ul class="price-features"><li><span class="pf-check">&#10003;</span><span data-ru="До 500 блюд" data-en="Up to 500 dishes" data-uz="500 tagacha taom">До 500 блюд</span></li><li><span class="pf-check">&#10003;</span><span data-ru="3 филиала" data-en="3 locations" data-uz="3 filial">3 филиала</span></li><li><span class="pf-check">&#10003;</span><span data-ru="AI официант" data-en="AI waiter" data-uz="AI ofitsiant">AI официант</span></li><li><span class="pf-check">&#10003;</span><span data-ru="5 языков" data-en="5 languages" data-uz="5 til">5 языков</span></li><li><span class="pf-check">&#10003;</span><span data-ru="Аналитика" data-en="Analytics" data-uz="Tahlil">Аналитика</span></li><li><span class="pf-check">&#10003;</span><span data-ru="Приоритетная поддержка" data-en="Priority support" data-uz="Ustuvor qo'llab-quvvatlash">Приоритетная поддержка</span></li></ul><button class="btn-price filled" data-ru="Подключить PRO" data-en="Get PRO" data-uz="PRO ulash">Подключить PRO</button></div>
+<div class="price-card anim anim-d2"><div class="price-tier">ELITE</div><div class="price-amount"><span class="price-currency">$</span><span class="price-val">99</span><span class="price-period" data-ru="/месяц" data-en="/month" data-uz="/oy">/месяц</span></div><div class="price-subtitle" data-ru="Для сетей ресторанов" data-en="For chains" data-uz="Tarmoqlar uchun">Для сетей ресторанов</div><ul class="price-features"><li><span class="pf-check">&#10003;</span><span data-ru="Безлимит блюд" data-en="Unlimited dishes" data-uz="Cheksiz taomlar">Безлимит блюд</span></li><li><span class="pf-check">&#10003;</span><span data-ru="Безлимит филиалов" data-en="Unlimited locations" data-uz="Cheksiz filiallar">Безлимит филиалов</span></li><li><span class="pf-check">&#10003;</span><span data-ru="CRM интеграция" data-en="CRM integration" data-uz="CRM integratsiya">CRM интеграция</span></li><li><span class="pf-check">&#10003;</span><span data-ru="Персональный менеджер" data-en="Dedicated manager" data-uz="Shaxsiy menejer">Персональный менеджер</span></li><li><span class="pf-check">&#10003;</span><span>SLA 99.9%</span></li><li><span class="pf-check">&#10003;</span><span>White Label</span></li></ul><button class="btn-price outline" data-ru="Связаться" data-en="Contact Us" data-uz="Bog'laning">Связаться</button></div>
+</div>
+</section>
+
+<section class="section" id="reviews">
+<div class="section-header anim"><div class="section-tag" data-ru="Отзывы" data-en="Reviews" data-uz="Sharhlar">Отзывы</div><h2 class="section-title" data-ru="Нам <span class='acc'>доверяют</span>" data-en="Trusted by <span class='acc'>restaurants</span>" data-uz="Bizga <span class='acc'>ishonishadi</span>" data-html="true">Нам <span class="acc">доверяют</span></h2></div>
+<div class="testi-grid">
+<div class="testi-card anim"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="testi-text" data-ru="Средний чек вырос на 18% за первый месяц. Гости сами выбирают, официанты не тратят время." data-en="Average check grew 18% in the first month. Guests choose themselves." data-uz="O'rtacha chek birinchi oyda 18% oshdi.">Средний чек вырос на 18% за первый месяц. Гости сами выбирают, официанты не тратят время.</div><div class="testi-author"><div class="testi-avatar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="testi-name">Азиз Каримов</div><div class="testi-role">Silk Garden</div></div></div></div>
+<div class="testi-card anim anim-d1"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="testi-text" data-ru="Туристы открывают меню на своем языке. Раньше объясняли на пальцах, теперь все элегантно." data-en="Tourists open the menu in their language. Everything is elegant now." data-uz="Sayyohlar menyuni o'z tillarida ochadilar.">Туристы открывают меню на своем языке. Раньше объясняли на пальцах, теперь все элегантно.</div><div class="testi-author"><div class="testi-avatar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="testi-name">Нигора Усманова</div><div class="testi-role">Besh Qozon</div></div></div></div>
+<div class="testi-card anim anim-d2"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="testi-text" data-ru="Настроили за 10 минут. Обновляем меню каждый день без звонков разработчикам." data-en="Set up in 10 minutes. We update daily without calling developers." data-uz="10 daqiqada sozladik. Har kuni dasturchilarsiz yangilaymiz.">Настроили за 10 минут. Обновляем меню каждый день без звонков разработчикам.</div><div class="testi-author"><div class="testi-avatar"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div><div class="testi-name">Тимур Рашидов</div><div class="testi-role">Oasis Lounge</div></div></div></div>
+</div>
+</section>
+
+<section class="section cta">
+<div class="cta-card anim">
+<h2 class="cta-title" data-ru="Готовы <span class='acc'>увеличить</span> продажи?" data-en="Ready to <span class='acc'>boost</span> sales?" data-uz="Savdoni <span class='acc'>oshirishga</span> tayyormisiz?" data-html="true">Готовы <span class="acc">увеличить</span> продажи?</h2>
+<p class="cta-desc" data-ru="Подключите бесплатно и увидьте результат за неделю" data-en="Connect free and see results in a week" data-uz="Bepul ulang va bir haftada natijani ko'ring">Подключите бесплатно и увидьте результат за неделю</p>
+<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+<button class="btn-primary" data-ru="Попробовать бесплатно" data-en="Try Free" data-uz="Bepul sinab ko'ring">Попробовать бесплатно</button>
+<a href="https://t.me/alacarte_uz" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--ink2)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161l-1.97 9.281c-.145.658-.537.818-1.084.508l-3-2.211-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.942z"/></svg>Telegram</a>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="footer-top">
+<div><div class="footer-brand">A LA CARTE</div><div class="footer-desc" data-ru="Платформа электронного меню для ресторанов нового поколения" data-en="Digital menu platform for next-gen restaurants" data-uz="Yangi avlod restoranlari uchun elektron menyu platformasi">Платформа электронного меню для ресторанов нового поколения</div></div>
+<div class="footer-cols">
+<div><div class="footer-col-title" data-ru="Продукт" data-en="Product" data-uz="Mahsulot">Продукт</div><a href="#features" data-ru="Функции" data-en="Features" data-uz="Imkoniyatlar">Функции</a><a href="#pricing" data-ru="Тарифы" data-en="Pricing" data-uz="Tariflar">Тарифы</a><a href="#demo">Demo</a></div>
+<div><div class="footer-col-title" data-ru="Контакты" data-en="Contact" data-uz="Aloqa">Контакты</div><a href="tel:+998901234567">+998 90 123 45 67</a><a href="https://t.me/alacarte_uz">Telegram</a><a href="mailto:hello@alacarte.uz">hello@alacarte.uz</a></div>
+</div>
+</div>
+<div class="footer-bottom">&copy; 2026 A la Carte. <span data-ru="Все права защищены." data-en="All rights reserved." data-uz="Barcha huquqlar himoyalangan.">Все права защищены.</span></div>
+</footer>
+
+<script>
+var lang='ru';
+function setLang(l){lang=l;document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('on')});document.querySelector('.lang-btn[onclick="setLang(\''+l+'\')"]').classList.add('on');document.querySelectorAll('[data-'+l+']').forEach(function(el){if(el.getAttribute('data-html')==='true'){el.innerHTML=el.getAttribute('data-'+l)}else{el.textContent=el.getAttribute('data-'+l)}});document.documentElement.lang=l}
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.anim').forEach(function(el){obs.observe(el)});
+document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})})});
+</script>
+</body>
+</html>
