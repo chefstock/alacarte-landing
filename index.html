@@ -615,7 +615,7 @@ async function doRegister() {
       document.getElementById('successBar').style.width = '100%'
     }, 50)
     setTimeout(function() {
-      window.location.href = '/dashboard'
+      window.location.href = 'https://menu.alacarte.uz/admin'
     }, 2200)
 
   } catch(e) {
@@ -645,7 +645,7 @@ async function doLogin() {
   try {
     var res = await sb.auth.signInWithPassword({ email: email, password: pass })
     if (res.error) throw res.error
-    window.location.href = '/dashboard'
+    window.location.href = 'https://menu.alacarte.uz/admin'
   } catch(e) {
     setLoading('btnLogin', false, 'Войти в панель')
     var msg = e.message || 'Ошибка входа'
