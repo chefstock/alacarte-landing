@@ -3,11 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>À la Carte — Цифровое меню нового поколения</title>
-<meta name="description" content="Электронное меню с AI-официантом для ресторанов">
+
+<!-- ── Primary SEO ── -->
+<title>À la Carte — Электронное меню для ресторанов Узбекистана</title>
+<meta name="description" content="Цифровое меню с AI-официантом, QR-кодом и аналитикой продаж. Настройка за 5 минут. 14 дней бесплатно. Уже 50+ ресторанов в Узбекистане.">
+<meta name="keywords" content="электронное меню ресторана, цифровое меню, QR меню, меню для ресторана Ташкент, AI официант, онлайн меню, menu.uz, alacarte, электронное меню Узбекистан">
+<meta name="author" content="À la Carte">
+<meta name="robots" content="index, follow">
 <meta name="theme-color" content="#E8EBF2">
+<link rel="canonical" href="https://alacarte.uz/">
+
+<!-- ── Hreflang ── -->
+<link rel="alternate" hreflang="ru" href="https://alacarte.uz/">
+<link rel="alternate" hreflang="uz" href="https://alacarte.uz/">
+<link rel="alternate" hreflang="en" href="https://alacarte.uz/">
+<link rel="alternate" hreflang="x-default" href="https://alacarte.uz/">
+
+<!-- ── Open Graph (Facebook, Telegram, WhatsApp) ── -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://alacarte.uz/">
+<meta property="og:title" content="À la Carte — Электронное меню для ресторанов">
+<meta property="og:description" content="QR-меню с AI-официантом и аналитикой. 14 дней бесплатно. Уже 50+ ресторанов.">
+<meta property="og:image" content="https://alacarte.uz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="À la Carte">
+
+<!-- ── Twitter Card ── -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="À la Carte — Электронное меню для ресторанов">
+<meta name="twitter:description" content="QR-меню с AI-официантом и аналитикой. 14 дней бесплатно.">
+<meta name="twitter:image" content="https://alacarte.uz/og-image.png">
+
+<!-- ── Yandex ── -->
+<meta name="yandex-verification" content="3b29bfbd02fe79da">
+
+<!-- ── Google ── -->
+<meta name="google-site-verification" content="ВСТАВЬ_КОД_ГУГЛА">
+
+<!-- ── Structured Data (Schema.org) ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "À la Carte",
+  "url": "https://alacarte.uz",
+  "description": "Электронное меню с AI-официантом, QR-кодом и аналитикой продаж для ресторанов Узбекистана",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web, iOS, Android",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "14 дней бесплатно"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "50"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "À la Carte",
+    "url": "https://alacarte.uz",
+    "logo": "https://alacarte.uz/icons/icon-512.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "url": "https://t.me/alacarte_uz"
+    }
+  }
+}
+</script>
+
+<!-- ── Preconnect ── -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- ── Favicon ── -->
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -175,6 +254,43 @@ footer{padding:50px clamp(20px,5vw,80px) 24px}
 .nav-center{display:none}
 }
 .hero .anim,.hero .anim.anim-d1,.hero .anim.anim-d2,.hero .anim.anim-d3{opacity:1;transform:translateY(0);transition:none}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(26,35,50,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg);border-radius:24px;padding:40px 36px;width:100%;max-width:440px;box-shadow:12px 12px 32px rgba(163,177,198,.6),-8px -8px 20px #fff;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.modal-bg.open .modal{transform:translateY(0) scale(1)}
+.modal-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.modal-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;letter-spacing:.06em}
+.modal-logo-name{font-size:14px;font-weight:800;color:var(--acc);letter-spacing:.06em;text-transform:uppercase}
+.modal-title{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:6px}
+.modal-sub{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:28px;line-height:1.5}
+.modal-trial{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;box-shadow:var(--neo-in);margin-bottom:24px;font-size:11px;font-weight:600;color:var(--ink2)}
+.modal-trial-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(45,158,114,.5);flex-shrink:0}
+.mfield{margin-bottom:16px}
+.mfield label{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.mfield input{width:100%;padding:12px 16px;border-radius:12px;border:none;font-size:13px;font-family:'Montserrat',sans-serif;outline:none;background:var(--bg);box-shadow:var(--neo-in);color:var(--ink);transition:box-shadow .2s}
+.mfield input:focus{box-shadow:inset 3px 3px 8px var(--sd),inset -3px -3px 8px var(--sl),0 0 0 2px rgba(26,35,50,.15)}
+.mfield input::placeholder{color:var(--muted2)}
+.modal-hint{font-size:10px;color:var(--muted);margin-top:5px}
+.modal-err{padding:10px 14px;border-radius:10px;background:rgba(192,80,96,.08);border:1px solid rgba(192,80,96,.2);font-size:11px;color:#c05060;margin-bottom:16px;display:none}
+.modal-err.show{display:block}
+.btn-modal{width:100%;padding:14px;border-radius:14px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;background:var(--acc);color:#fff;box-shadow:4px 4px 12px rgba(26,35,50,.3),-2px -2px 6px rgba(60,70,90,.25);transition:all .2s;letter-spacing:.02em;margin-top:8px;position:relative;overflow:hidden}
+.btn-modal:disabled{opacity:.6;cursor:not-allowed}
+.btn-modal:not(:disabled):hover{box-shadow:var(--neo-in)}
+.modal-switch{text-align:center;margin-top:18px;font-size:11px;color:var(--muted);font-weight:500}
+.modal-switch a{color:var(--acc);font-weight:700;cursor:pointer;text-decoration:none}
+.modal-switch a:hover{text-decoration:underline}
+.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px;line-height:1;padding:4px;border-radius:8px;transition:color .2s}
+.modal-close:hover{color:var(--ink)}
+.modal-success{text-align:center;padding:20px 0}
+.modal-success-icon{width:64px;height:64px;border-radius:20px;background:rgba(45,158,114,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.modal-success-icon svg{stroke:var(--green);width:28px;height:28px}
+.modal-tabs{display:flex;gap:4px;margin-bottom:24px;border-radius:12px;padding:4px;box-shadow:var(--neo-in)}
+.modal-tab{flex:1;padding:8px;border:none;border-radius:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;background:transparent;color:var(--muted);transition:all .2s}
+.modal-tab.on{background:var(--acc);color:#fff;box-shadow:3px 3px 8px rgba(26,35,50,.3)}
+.modal-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -298,18 +414,260 @@ footer{padding:50px clamp(20px,5vw,80px) 24px}
 <div><div class="footer-brand">A LA CARTE</div><div class="footer-desc" data-ru="Платформа электронного меню для ресторанов нового поколения" data-en="Digital menu platform for next-gen restaurants" data-uz="Yangi avlod restoranlari uchun elektron menyu platformasi">Платформа электронного меню для ресторанов нового поколения</div></div>
 <div class="footer-cols">
 <div><div class="footer-col-title" data-ru="Продукт" data-en="Product" data-uz="Mahsulot">Продукт</div><a href="#features" data-ru="Функции" data-en="Features" data-uz="Imkoniyatlar">Функции</a><a href="#pricing" data-ru="Тарифы" data-en="Pricing" data-uz="Tariflar">Тарифы</a><a href="#demo">Demo</a></div>
-<div><div class="footer-col-title" data-ru="Контакты" data-en="Contact" data-uz="Aloqa">Контакты</div><a href="tel:+998901234567">+998 90 123 45 67</a><a href="https://t.me/alacarte_uz">Telegram</a><a href="mailto:hello@alacarte.uz">hello@alacarte.uz</a></div>
+<div><div class="footer-col-title" data-ru="Контакты" data-en="Contact" data-uz="Aloqa">Контакты</div><a href="tel:+998901234567">+998 90 123 45 67</a><a href="https://t.me/alacarte_uz">Telegram</a><a href="/cdn-cgi/l/email-protection#1a727f7676755a7b767b797b686e7f346f60"><span class="__cf_email__" data-cfemail="751d1019191a3514191416140701105b000f">[email&#160;protected]</span></a></div>
 </div>
 </div>
 <div class="footer-bottom">&copy; 2026 A la Carte. <span data-ru="Все права защищены." data-en="All rights reserved." data-uz="Barcha huquqlar himoyalangan.">Все права защищены.</span></div>
 </footer>
 
-<script>
+<!-- ── REGISTRATION / LOGIN MODAL ── -->
+<div class="modal-bg" id="modalBg" onclick="handleBgClick(event)">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal()" title="Закрыть">×</button>
+
+    <div class="modal-logo">
+      <div class="modal-logo-icon">AC</div>
+      <div class="modal-logo-name">À la Carte</div>
+    </div>
+
+    <!-- Tabs: Register / Login -->
+    <div class="modal-tabs">
+      <button class="modal-tab on" id="tabReg" onclick="switchTab('reg')">Регистрация</button>
+      <button class="modal-tab" id="tabLogin" onclick="switchTab('login')">Войти</button>
+    </div>
+
+    <!-- Trial banner (only on reg tab) -->
+    <div class="modal-trial" id="trialBanner">
+      <div class="modal-trial-dot"></div>
+      <span>14 дней бесплатно — без карты, без обязательств</span>
+    </div>
+
+    <!-- Error message -->
+    <div class="modal-err" id="modalErr"></div>
+
+    <!-- REGISTER FORM -->
+    <div id="formReg">
+      <div class="mfield">
+        <label>Название ресторана</label>
+        <input type="text" id="regName" placeholder="Silk Garden" autocomplete="organization" />
+      </div>
+      <div class="mfield">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="owner@restaurant.uz" autocomplete="email" />
+      </div>
+      <div class="mfield">
+        <label>Пароль</label>
+        <input type="password" id="regPass" placeholder="Минимум 8 символов" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()" />
+        <div class="modal-hint">Вы сможете войти с этим паролем</div>
+      </div>
+      <button class="btn-modal" id="btnReg" onclick="doRegister()">Попробовать бесплатно →</button>
+      <div class="modal-switch">Уже есть аккаунт? <a onclick="switchTab('login')">Войти</a></div>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="formLogin" style="display:none">
+      <div class="mfield">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="owner@restaurant.uz" autocomplete="email" />
+      </div>
+      <div class="mfield">
+        <label>Пароль</label>
+        <input type="password" id="loginPass" placeholder="Ваш пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <button class="btn-modal" id="btnLogin" onclick="doLogin()">Войти в панель</button>
+      <div class="modal-switch">Нет аккаунта? <a onclick="switchTab('reg')">Зарегистрироваться</a></div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="formSuccess" style="display:none">
+      <div class="modal-success">
+        <div class="modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">Добро пожаловать!</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:24px">Ресторан создан. Переходим в панель управления…</div>
+        <div style="height:4px;border-radius:99px;background:var(--neo-in);overflow:hidden;box-shadow:var(--neo-in)">
+          <div id="successBar" style="height:100%;background:var(--green);border-radius:99px;width:0%;transition:width 2s linear"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Supabase JS from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var lang='ru';
 function setLang(l){lang=l;document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('on')});document.querySelector('.lang-btn[onclick="setLang(\''+l+'\')"]').classList.add('on');document.querySelectorAll('[data-'+l+']').forEach(function(el){if(el.getAttribute('data-html')==='true'){el.innerHTML=el.getAttribute('data-'+l)}else{el.textContent=el.getAttribute('data-'+l)}});document.documentElement.lang=l}
 var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.anim').forEach(function(el){obs.observe(el)});
-document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})})});
+
+// ── Supabase init ──────────────────────────────────────────────────────────
+var SUPABASE_URL = 'https://uobzoecvbwjwxqerwltl.supabase.co'
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvYnpvZWN2Yndqd3hxZXJ3bHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTY4MjYsImV4cCI6MjA5MDIzMjgyNn0.mhg7OX4d9cF68umseICRmQQdgMboTaE1YUwCrO83tOw'
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+// ── Modal helpers ──────────────────────────────────────────────────────────
+function openModal(tab) {
+  switchTab(tab || 'reg')
+  document.getElementById('modalBg').classList.add('open')
+  document.body.style.overflow = 'hidden'
+  setTimeout(function() {
+    var f = tab === 'login' ? document.getElementById('loginEmail') : document.getElementById('regName')
+    if (f) f.focus()
+  }, 350)
+}
+
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open')
+  document.body.style.overflow = ''
+  clearErr()
+}
+
+function handleBgClick(e) {
+  if (e.target === document.getElementById('modalBg')) closeModal()
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal()
+})
+
+function switchTab(tab) {
+  var isReg = tab === 'reg'
+  document.getElementById('tabReg').classList.toggle('on', isReg)
+  document.getElementById('tabLogin').classList.toggle('on', !isReg)
+  document.getElementById('formReg').style.display = isReg ? '' : 'none'
+  document.getElementById('formLogin').style.display = isReg ? 'none' : ''
+  document.getElementById('formSuccess').style.display = 'none'
+  document.getElementById('trialBanner').style.display = isReg ? '' : 'none'
+  clearErr()
+}
+
+function showErr(msg) {
+  var el = document.getElementById('modalErr')
+  el.textContent = msg
+  el.classList.add('show')
+}
+
+function clearErr() {
+  document.getElementById('modalErr').classList.remove('show')
+}
+
+function setLoading(btnId, loading, text) {
+  var btn = document.getElementById(btnId)
+  if (loading) {
+    btn.disabled = true
+    btn.innerHTML = '<span class="modal-spinner"></span>' + (text || 'Подождите…')
+  } else {
+    btn.disabled = false
+    btn.textContent = text || btn.dataset.orig
+  }
+}
+
+// ── Slug generator ─────────────────────────────────────────────────────────
+function makeSlug(name) {
+  var map = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya','ğ':'g','ş':'sh','ö':'o','ü':'u','ı':'i','č':'ch','ž':'zh'}
+  return name.toLowerCase().split('').map(function(c){return map[c]||c}).join('').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) + '-' + Math.random().toString(36).slice(2,6)
+}
+
+// ── REGISTER ───────────────────────────────────────────────────────────────
+async function doRegister() {
+  clearErr()
+  var name  = document.getElementById('regName').value.trim()
+  var email = document.getElementById('regEmail').value.trim()
+  var pass  = document.getElementById('regPass').value
+
+  if (!name)              return showErr('Введите название ресторана')
+  if (!email)             return showErr('Введите email')
+  if (!email.includes('@')) return showErr('Проверьте email')
+  if (pass.length < 8)    return showErr('Пароль — минимум 8 символов')
+
+  setLoading('btnReg', true, 'Создаём аккаунт…')
+
+  try {
+    // 1. Create user in Supabase Auth
+    var authRes = await sb.auth.signUp({ email: email, password: pass })
+    if (authRes.error) throw authRes.error
+
+    var userId = authRes.data.user?.id
+    if (!userId) throw new Error('Не удалось создать аккаунт')
+
+    // 2. Create restaurant row
+    var slug = makeSlug(name)
+    var trialEnds = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
+
+    var restRes = await sb.from('restaurants').insert({
+      owner_id: userId,
+      name: name,
+      slug: slug,
+      currency: 'UZS',
+      plan: 'trial',
+      trial_ends_at: trialEnds,
+    })
+    if (restRes.error) throw restRes.error
+
+    // 3. Show success + redirect
+    document.getElementById('formReg').style.display = 'none'
+    document.getElementById('trialBanner').style.display = 'none'
+    document.getElementById('formSuccess').style.display = ''
+    setTimeout(function() {
+      document.getElementById('successBar').style.width = '100%'
+    }, 50)
+    setTimeout(function() {
+      window.location.href = '/dashboard'
+    }, 2200)
+
+  } catch(e) {
+    setLoading('btnReg', false, 'Попробовать бесплатно →')
+    var msg = e.message || 'Ошибка. Попробуйте ещё раз.'
+    if (msg.includes('already registered') || msg.includes('User already registered')) {
+      msg = 'Этот email уже зарегистрирован. <a onclick="switchTab(\'login\')" style="color:var(--acc);font-weight:700;cursor:pointer">Войдите →</a>'
+      document.getElementById('modalErr').innerHTML = msg
+      document.getElementById('modalErr').classList.add('show')
+      return
+    }
+    showErr(msg)
+  }
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  clearErr()
+  var email = document.getElementById('loginEmail').value.trim()
+  var pass  = document.getElementById('loginPass').value
+
+  if (!email) return showErr('Введите email')
+  if (!pass)  return showErr('Введите пароль')
+
+  setLoading('btnLogin', true, 'Входим…')
+
+  try {
+    var res = await sb.auth.signInWithPassword({ email: email, password: pass })
+    if (res.error) throw res.error
+    window.location.href = '/dashboard'
+  } catch(e) {
+    setLoading('btnLogin', false, 'Войти в панель')
+    var msg = e.message || 'Ошибка входа'
+    if (msg.includes('Invalid login')) msg = 'Неверный email или пароль'
+    showErr(msg)
+  }
+}
+
+// ── Wire up ALL "Попробовать" buttons ─────────────────────────────────────
+document.querySelectorAll('.btn-primary, .btn-price').forEach(function(btn) {
+  var txt = btn.textContent.trim().toLowerCase()
+  if (txt.includes('попробовать') || txt.includes('бесплатно') || txt.includes('начать') || txt.includes('подключить')) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      openModal('reg')
+    })
+  }
+})
+document.querySelector('.btn-nav').addEventListener('click', function(e) {
+  e.preventDefault()
+  openModal('reg')
+})
 </script>
 </body>
-</html>
