@@ -672,37 +672,5 @@ document.querySelector('.btn-nav').addEventListener('click', function(e) {
   e.preventDefault()
   openModal('reg')
 })
-<script type="module">
-// À la Carte — динамические тарифы и контакты из панели управления (site_settings)
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-const SB_URL='https://uobzoecvbwjwxqerwltl.supabase.co'
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvYnpvZWN2Yndqd3hxZXJ3bHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTY4MjYsImV4cCI6MjA5MDIzMjgyNn0.mhg7OX4d9cF68umseICRmQQdgMboTaE1YUwCrO83tOw'
-const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))
-try{
-  const sb=createClient(SB_URL,SB_KEY)
-  const {data}=await sb.from('site_settings').select('data').eq('id','main').single()
-  const s=data&&data.data
-  if(s&&s.plans&&s.plans.length) renderPricing(s.plans)
-  if(s&&s.contacts) renderContacts(s.contacts)
-}catch(e){ console.warn('site_settings load failed:',e) }
-
-function renderPricing(plans){
-  const grid=document.querySelector('.pricing-grid'); if(!grid) return
-  grid.innerHTML=plans.map((p,i)=>`
-    <div class="price-card ${p.popular?'pop ':''}anim${i===1?' anim-d1':i===2?' anim-d2':''} visible">
-      ${p.popular?'<div class="price-badge">Популярный</div>':''}
-      <div class="price-tier">${esc(p.name)}</div>
-      <div class="price-amount">${p.currency?`<span class="price-currency">${esc(p.currency)}</span>`:''}<span class="price-val">${esc(p.price)}</span><span class="price-period">${esc(p.period)}</span></div>
-      <div class="price-subtitle">${esc(p.subtitle||'')}</div>
-      <ul class="price-features">${(p.features||[]).map(f=>`<li><span class="${f.included?'pf-check':'pf-x'}">${f.included?'&#10003;':'&mdash;'}</span><span${f.included?'':' style="color:var(--muted2)"'}>${esc(f.text)}</span></li>`).join('')}</ul>
-      <button class="btn-price ${p.popular?'filled':'outline'}" onclick="window.open('https://t.me/alacarte_pay_bot?start=${esc(p.tgParam||p.id||'')}','_blank')">${esc(p.btnLabel||'Подключить')}</button>
-    </div>`).join('')
-}
-function renderContacts(c){
-  if(c.telegram){
-    const tg=c.telegram.startsWith('http')?c.telegram:('https://t.me/'+String(c.telegram).replace(/^@/,''))
-    document.querySelectorAll('a[href*="t.me/alacarte_uz"]').forEach(a=>a.href=tg)
-  }
-}
 </script>
 </body>
