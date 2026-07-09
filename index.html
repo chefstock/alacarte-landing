@@ -416,8 +416,8 @@ footer{padding:50px clamp(20px,5vw,80px) 24px}
 <div class="footer-top">
 <div><div class="footer-brand">A LA CARTE</div><div class="footer-desc" data-ru="Платформа электронного меню для ресторанов нового поколения" data-en="Digital menu platform for next-gen restaurants" data-uz="Yangi avlod restoranlari uchun elektron menyu platformasi">Платформа электронного меню для ресторанов нового поколения</div></div>
 <div class="footer-cols">
-<div><div class="footer-col-title" data-ru="Продукт" data-en="Product" data-uz="Mahsulot">Продукт</div><a href="#features" data-ru="Функции" data-en="Features" data-uz="Imkoniyatlar">Функции</a><a href="#pricing" data-ru="Тарифы" data-en="Pricing" data-uz="Tariflar">Тарифы</a><a href="#demo">Demo</a></div>
-<div><div class="footer-col-title" data-ru="Контакты" data-en="Contact" data-uz="Aloqa">Контакты</div><a href="tel:+998901234567">+998 90 123 45 67</a><a href="https://t.me/alacarte_uz">Telegram</a><a href="/cdn-cgi/l/email-protection#1a727f7676755a7b767b797b686e7f346f60"><span class="__cf_email__" data-cfemail="751d1019191a3514191416140701105b000f">[email&#160;protected]</span></a></div>
+<div class="footer-col"><div class="footer-col-title" data-ru="Продукт" data-en="Product" data-uz="Mahsulot">Продукт</div><a href="#features" data-ru="Функции" data-en="Features" data-uz="Imkoniyatlar">Функции</a><a href="#pricing" data-ru="Тарифы" data-en="Pricing" data-uz="Tariflar">Тарифы</a><a href="#demo">Demo</a></div>
+<div class="footer-col"><div class="footer-col-title" data-ru="Контакты" data-en="Contact" data-uz="Aloqa">Контакты</div><a href="tel:+998901234567">+998 90 123 45 67</a><a href="https://t.me/alacarte_uz">Telegram</a><a href="/cdn-cgi/l/email-protection#1a727f7676755a7b767b797b686e7f346f60"><span class="__cf_email__" data-cfemail="751d1019191a3514191416140701105b000f">[email&#160;protected]</span></a></div>
 </div>
 </div>
 <div class="footer-bottom">&copy; 2026 A la Carte. <span data-ru="Все права защищены." data-en="All rights reserved." data-uz="Barcha huquqlar himoyalangan.">Все права защищены.</span></div>
@@ -704,11 +704,37 @@ function renderPricing(plans) {
   }).join('')
 }
 
+function tgUrl(v) {
+  const raw = String(v).trim()
+  return raw.indexOf('http') === 0 ? raw : 'https://t.me/' + raw.replace(/^@/, '')
+}
+function waUrl(v) { return 'https://wa.me/' + String(v).replace(/[^0-9]/g, '') }
+
 function renderContacts(c) {
-  if (c && c.telegram) {
-    const raw = String(c.telegram)
-    const tg = raw.indexOf('http') === 0 ? raw : 'https://t.me/' + raw.replace(/^@/, '')
-    document.querySelectorAll('a[href*="t.me/alacarte_uz"]').forEach(function(a) { a.href = tg })
+  if (!c) return
+  if (c.phone) {
+    const digits = String(c.phone).replace(/[^0-9+]/g, '')
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a) {
+      a.href = 'tel:' + digits
+      a.textContent = c.phone
+    })
+  }
+  if (c.telegram) {
+    const url = tgUrl(c.telegram)
+    document.querySelectorAll('a[href*="t.me/alacarte_uz"]').forEach(function(a) { a.href = url })
+  }
+  if (c.whatsapp) {
+    const telLink = document.querySelector('a[href^="tel:"]')
+    if (telLink && telLink.parentNode && !document.querySelector('a[href*="wa.me"]')) {
+      const wa = document.createElement('a')
+      wa.href = waUrl(c.whatsapp)
+      wa.target = '_blank'
+      wa.rel = 'noreferrer'
+      wa.textContent = 'WhatsApp'
+      const tgLink = telLink.parentNode.querySelector('a[href*="t.me"]')
+      if (tgLink && tgLink.nextSibling) telLink.parentNode.insertBefore(wa, tgLink.nextSibling)
+      else telLink.parentNode.appendChild(wa)
+    }
   }
 }
 
