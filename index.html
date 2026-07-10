@@ -589,26 +589,25 @@ async function doRegister() {
   setLoading('btnReg', true, 'Создаём аккаунт…')
 
   try {
-    // 1. Create user in Supabase Auth
-    var authRes = await sb.auth.signUp({ email: email, password: pass })
-    if (authRes.error) throw authRes.error
-
-    var userId = authRes.data.user?.id
-    if (!userId) throw new Error('Не удалось создать аккаунт')
-
-    // 2. Create restaurant row
+    // 1. Создаём пользователя. Ресторан создаст триггер on_auth_user_created
+    //    (название и slug передаём в метаданных, plan/trial_ends_at задаёт база)
     var slug = makeSlug(name)
-    var trialEnds = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
-
-    var restRes = await sb.from('restaurants').insert({
-      owner_id: userId,
-      name: name,
-      slug: slug,
-      currency: 'UZS',
-      plan: 'trial',
-      trial_ends_at: trialEnds,
+    var authRes = await sb.auth.signUp({
+      email: email,
+      password: pass,
+      options: { data: { restaurant_name: name, restaurant_slug: slug } },
     })
-    if (restRes.error) throw restRes.error
+    if (authRes.error) throw authRes.error
+    if (!authRes.data.user?.id) throw new Error('Не удалось создать аккаунт')
+
+    // 2. Если подтверждение email включено — сессии нет, показываем «проверьте почту»
+    if (!authRes.data.session) {
+      setLoading('btnReg', false, 'Попробовать бесплатно →')
+      document.getElementById('modalErr').innerHTML =
+        'Аккаунт создан. Проверьте почту <b>' + email + '</b> и подтвердите адрес, затем войдите.'
+      document.getElementById('modalErr').classList.add('show')
+      return
+    }
 
     // 3. Show success + redirect
     document.getElementById('formReg').style.display = 'none'
@@ -658,20 +657,25 @@ async function doLogin() {
 }
 
 // ── Wire up ALL "Попробовать" buttons ─────────────────────────────────────
-document.querySelectorAll('.btn-primary, .btn-price').forEach(function(btn) {
-  var txt = btn.textContent.trim().toLowerCase()
-  if (txt.includes('попробовать') || txt.includes('бесплатно') || txt.includes('начать') || txt.includes('подключить')) {
+// Кнопки пробного периода -> модалка регистрации.
+// ВАЖНО: снимаем inline onclick. preventDefault() его НЕ отменяет — он срабатывает
+// первым и открывает вкладку бота оплаты вдобавок к модалке.
+function wireTrialButtons() {
+  document.querySelectorAll('.btn-primary, .btn-price, .btn-nav').forEach(function(btn) {
+    if (btn.dataset.trialWired) return
+    var txt = btn.textContent.trim().toLowerCase()
+    if (!(txt.includes('попробовать') || txt.includes('бесплатно') || txt.includes('начать'))) return
+    btn.onclick = null
+    btn.dataset.trialWired = '1'
     btn.addEventListener('click', function(e) {
       e.preventDefault()
       e.stopPropagation()
       openModal('reg')
     })
-  }
-})
-document.querySelector('.btn-nav').addEventListener('click', function(e) {
-  e.preventDefault()
-  openModal('reg')
-})
+  })
+}
+window.wireTrialButtons = wireTrialButtons
+wireTrialButtons()
 </script>
 
 <script type="module">
@@ -702,6 +706,8 @@ function renderPricing(plans) {
       '<button class="btn-price ' + btnCls + '" onclick="window.open(\'https://t.me/alacarte_pay_bot?start=' + tg + '\',\'_blank\')">' + esc(p.btnLabel || 'Подключить') + '</button>' +
       '</div>'
   }).join('')
+  // карточки пересозданы -> заново навесить обработчики на кнопки пробного периода
+  if (window.wireTrialButtons) window.wireTrialButtons()
 }
 
 function tgUrl(v) {
@@ -739,7 +745,7 @@ function renderContacts(c) {
 }
 
 try {
-  const sb = createClient(SB_URL, SB_KEY)
+  const sb = createClient(SB_URL, SB_KEY, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } })
   const res = await sb.from('site_settings').select('data').eq('id', 'main').single()
   const s = res && res.data ? res.data.data : null
   if (s && s.plans && s.plans.length) renderPricing(s.plans)
